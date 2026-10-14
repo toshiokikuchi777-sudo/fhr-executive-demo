@@ -22,7 +22,7 @@ test('September JPY totals reconcile membership and money', () => {
     assert.equal(summary.netGrowth, summary.joins - summary.leaves);
     assert.equal(summary.currency, 'JPY');
     assert.equal(summary.storeCount, storeId === 'all' ? 3 : 1);
-    assert.equal(summary.countryCount, storeId === 'all' ? 3 : 1);
+    assert.equal(summary.countryCount, storeId === 'all' ? 2 : 1);
   }
   assert.deepEqual(data.summary(), data.summary('all'));
 });
@@ -48,7 +48,7 @@ test('all-store rates use weighted totals and retain precision', () => {
 });
 
 test('monthly series closes in September and matches current and previous summaries', () => {
-  for (const scope of ['A', 'B', 'C', 'JP', 'MY', 'HK', 'all']) {
+  for (const scope of ['A', 'B', 'C', 'JP', 'MY', 'all']) {
     for (const currency of scope === 'all' ? ['JPY'] : ['JPY', 'local']) {
       const series = data.monthlySeries(scope, currency);
       const summary = data.summary(scope, currency);
@@ -74,29 +74,57 @@ test('every all-store month is the sum of the three stores', () => {
 });
 
 test('country, store, and consolidated JPY reports agree', () => {
-  const pairs = [['JP', 'A'], ['MY', 'B'], ['HK', 'C']];
-  for (const [country, store] of pairs) {
-    for (const currency of ['JPY', 'local']) {
-      assert.deepEqual(data.summary(country, currency), data.summary(store, currency));
-      assert.deepEqual(data.monthlySeries(country, currency), data.monthlySeries(store, currency));
-    }
+  const sumKeys = ['revenue', 'expenses', 'profit', 'previousRevenue', 'previousProfit', 'opening', 'joins', 'leaves', 'members', 'pending', 'followupsTotal', 'followupsCompleted', 'netGrowth', 'storeCount'];
+  for (const currency of ['JPY', 'local']) {
+    assert.deepEqual(data.summary('MY', currency), data.summary('B', currency));
+    assert.deepEqual(data.monthlySeries('MY', currency), data.monthlySeries('B', currency));
+    const japan = data.summary('JP', currency);
+    const domesticStores = ['A', 'C'].map(store => data.summary(store, currency));
+    for (const key of sumKeys) assert.equal(japan[key], domesticStores.reduce((sum, store) => sum + store[key], 0), 'JP: ' + key);
+    assert.equal(japan.countryCount, 1);
+    const domesticSeries = ['A', 'C'].map(store => data.monthlySeries(store, currency));
+    data.monthlySeries('JP', currency).forEach((month, index) => {
+      for (const key of ['revenue', 'profit']) assert.equal(month[key], domesticSeries.reduce((sum, series) => sum + series[index][key], 0), 'JP month: ' + key);
+    });
   }
   const consolidated = data.summary();
-  const countries = pairs.map(([country]) => data.summary(country));
-  for (const key of ['revenue', 'expenses', 'profit', 'previousRevenue', 'previousProfit', 'opening', 'joins', 'leaves', 'members', 'pending', 'followupsTotal', 'followupsCompleted', 'netGrowth', 'storeCount', 'countryCount']) {
+  const countries = ['JP', 'MY'].map(country => data.summary(country));
+  for (const key of [...sumKeys, 'countryCount']) {
     assert.equal(consolidated[key], countries.reduce((sum, country) => sum + country[key], 0), key);
   }
-  const countrySeries = pairs.map(([country]) => data.monthlySeries(country));
+  const countrySeries = ['JP', 'MY'].map(country => data.monthlySeries(country));
   data.monthlySeries().forEach((month, index) => {
     for (const key of ['revenue', 'profit']) assert.equal(month[key], countrySeries.reduce((sum, series) => sum + series[index][key], 0));
   });
+});
+
+test('Japan groups two JPY models with weighted rates and one country', () => {
+  const japan = data.summary('JP', 'local');
+  assert.equal(japan.currency, 'JPY');
+  assert.equal(japan.storeCount, 2);
+  assert.equal(japan.countryCount, 1);
+  assert.equal(japan.revenue, 13500000);
+  assert.equal(japan.expenses, 10230000);
+  assert.equal(japan.profit, 3270000);
+  assert.equal(japan.previousRevenue, 12780000);
+  assert.equal(japan.previousProfit, 2880000);
+  assert.equal(japan.opening, 1500);
+  assert.equal(japan.members, 1552);
+  assert.equal(japan.leaves, 30);
+  assert.equal(japan.pending, 7);
+  assert.equal(japan.churnPercent, 30 / 1500 * 100);
+  assert.equal(japan.previousChurnPercent, 30 / 1500 * 100);
+  assert.equal(japan.completionPercent, 31 / 38 * 100);
+  assert.equal(japan.revenueChangePercent, 720000 / 12780000 * 100);
+  assert.equal(japan.profitChangePercent, 390000 / 2880000 * 100);
+  assert.deepEqual(japan, data.summary('JP', 'JPY'));
 });
 
 test('native currency amounts convert to JPY without changing people, cases, or rates', () => {
   const expectations = [
     { id: 'A', currency: 'JPY', rate: 1, revenue: 7200000, expenses: 5430000, profit: 1770000, previousRevenue: 6840000, previousProfit: 1530000 },
     { id: 'B', currency: 'MYR', rate: 30, revenue: 175000, expenses: 153000, profit: 22000, previousRevenue: 181000, previousProfit: 32000 },
-    { id: 'C', currency: 'HKD', rate: 20, revenue: 315000, expenses: 240000, profit: 75000, previousRevenue: 297000, previousProfit: 67500 }
+    { id: 'C', currency: 'JPY', rate: 1, revenue: 6300000, expenses: 4800000, profit: 1500000, previousRevenue: 5940000, previousProfit: 1350000 }
   ];
   for (const expected of expectations) {
     const local = data.summary(expected.id, 'local');
@@ -117,7 +145,7 @@ test('all six months use the same fixed conversion as the current and prior mont
   const expectations = [
     { id: 'A', rate: 1, revenue: [6330000, 6480000, 6630000, 6720000, 6840000, 7200000], profit: [1230000, 1290000, 1350000, 1410000, 1530000, 1770000] },
     { id: 'B', rate: 30, revenue: [163000, 167000, 173000, 179000, 181000, 175000], profit: [27000, 28000, 31000, 33000, 32000, 22000] },
-    { id: 'C', rate: 20, revenue: [271500, 277500, 285000, 292500, 297000, 315000], profit: [54000, 58500, 61500, 64500, 67500, 75000] }
+    { id: 'C', rate: 1, revenue: [5430000, 5550000, 5700000, 5850000, 5940000, 6300000], profit: [1080000, 1170000, 1230000, 1290000, 1350000, 1500000] }
   ];
   for (const expected of expectations) {
     for (const key of ['revenue', 'profit']) {
@@ -139,7 +167,7 @@ test('mixed native currencies cannot be aggregated and unsupported currencies re
 });
 
 test('invalid store or country scopes reject rather than displaying unrelated totals', () => {
-  for (const scope of ['D', 'US', 'jp', '', 'a', null, 0, {}, '__proto__']) {
+  for (const scope of ['D', 'US', 'HK', 'jp', '', 'a', null, 0, {}, '__proto__']) {
     for (const currency of ['JPY', 'local']) {
       assert.throws(() => data.summary(scope, currency), RangeError);
       assert.throws(() => data.monthlySeries(scope, currency), RangeError);
@@ -171,22 +199,22 @@ test('browser classic script exposes the same API without Node globals', () => {
   assert.equal(context.window.FHRData.summary().revenue, data.summary().revenue);
   assert.equal(context.window.FHRData.simulate(10, 150).monthlyRevenue, 1500);
   assert.equal(context.window.FHRData.stores.length, 3);
-  assert.equal(context.window.FHRData.countries.length, 3);
+  assert.equal(context.window.FHRData.countries.length, 2);
   assert.equal(context.window.FHRData.summary('MY', 'local').currency, 'MYR');
-  assert.equal(context.window.FHRData.summary('HK').revenue, 6300000);
+  assert.equal(context.window.FHRData.summary('JP').revenue, 13500000);
+  assert.equal(context.window.FHRData.summary('C', 'local').revenue, 6300000);
   assert.equal(context.window.FHRData.monthlySeries().length, 6);
 });
 
 test('country and store metadata are complete and immutable', () => {
   assert.deepEqual(data.countries, [
     { id: 'JP', name: '日本', currency: 'JPY', rateToJPY: 1 },
-    { id: 'MY', name: 'マレーシア', currency: 'MYR', rateToJPY: 30 },
-    { id: 'HK', name: '香港', currency: 'HKD', rateToJPY: 20 }
+    { id: 'MY', name: 'マレーシア', currency: 'MYR', rateToJPY: 30 }
   ]);
-  assert.deepEqual(data.stores.map(({ id, country, currency, region }) => ({ id, country, currency, region })), [
-    { id: 'A', country: 'JP', currency: 'JPY', region: '日本' },
-    { id: 'B', country: 'MY', currency: 'MYR', region: 'マレーシア' },
-    { id: 'C', country: 'HK', currency: 'HKD', region: '香港' }
+  assert.deepEqual(data.stores.map(({ id, name, country, currency, region, brand, operator }) => ({ id, name, country, currency, region, brand, operator })), [
+    { id: 'A', name: '国内AFモデル', country: 'JP', currency: 'JPY', region: '日本', brand: 'ANYTIME FITNESS', operator: '株式会社ラ・ヴィーチェ' },
+    { id: 'B', name: 'マレーシアAFモデル', country: 'MY', currency: 'MYR', region: 'マレーシア', brand: 'ANYTIME FITNESS', operator: 'FHR ALLIANCE SDN BHD.' },
+    { id: 'C', name: 'VISPO24モデル', country: 'JP', currency: 'JPY', region: '日本', brand: 'VISPO24', operator: '株式会社ラ・ヴィーチェ' }
   ]);
   assert.ok(Object.isFrozen(data.countries));
   assert.ok(data.countries.every(Object.isFrozen));
@@ -194,6 +222,8 @@ test('country and store metadata are complete and immutable', () => {
   assert.throws(() => { data.countries[1].currency = 'JPY'; }, TypeError);
   assert.throws(() => { data.countries.push({ id: 'US' }); }, TypeError);
   assert.throws(() => { data.stores[1].country = 'JP'; }, TypeError);
+  assert.throws(() => { data.stores[2].brand = 'ANYTIME FITNESS'; }, TypeError);
+  assert.throws(() => { data.stores[2].operator = '別会社'; }, TypeError);
   assert.throws(() => { data.stores[0].revenue = 1; }, TypeError);
   assert.throws(() => { data.stores.push({ id: 'D' }); }, TypeError);
   assert.equal(data.summary('MY').revenue, 5250000);
