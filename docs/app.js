@@ -3,9 +3,10 @@
   const D = window.FHRData;
   const main = document.getElementById('main');
   const dialog = document.getElementById('action-dialog');
-  const labels = {overview:'経営概況',stores:'店舗の課題',actions:'改善アクション',impact:'効果を考える',rollout:'導入プラン'};
-  const state = {view:'overview',store:'B',metric:'revenue',task:null,people:10,fee:180,tour:false,step:0};
+  const labels = {intro:'この資料について',overview:'経営概況',stores:'店舗の課題',actions:'改善アクション',impact:'効果を考える',rollout:'導入プラン'};
+  const state = {view:'intro',store:'B',metric:'revenue',task:null,people:10,fee:180,tour:false,step:0};
   const tourSteps = [
+    {view:'intro',title:'この仕組みが、自社の経営に役立ちそうか',note:'店舗の状況確認から担当・期限の設定まで、実際の画面で確かめます。まず1〜2店舗で試すなら、どの業務から始めるかをご検討ください。'},
     {view:'overview',title:'全店舗の状況を、ひと目でつかむ',note:'売上は伸びています。では、全店舗が同じように順調なのでしょうか。'},
     {view:'stores',title:'店舗Bの課題を、数字で確かめる',note:'退会率は2.0%から3.0%へ。未対応12件との関連は、店舗に確認します。'},
     {view:'actions',title:'提案を、担当と期限のある行動にする',note:'「担当・期限を決める」を押して、デモ内のアクションに追加してください。'},
@@ -20,6 +21,34 @@
   let toastTimer;
   function intro(kicker,title,subtitle) {
     return `<div class="page-intro"><div><span class="eyebrow">${kicker}</span><h1>${title}</h1><p class="intro-note">${subtitle}</p></div><div class="period">REPORTING PERIOD<strong>2026.09</strong>月次確定値 · デモ</div></div>`;
+  }
+  function introduction() {
+    return `<section class="welcome-page">
+      <div class="welcome-hero">
+        <div class="welcome-copy">
+          <span class="eyebrow">この資料について</span>
+          <h1>店舗の状況をまとめて見て、<br>次に何をするかを決める。</h1>
+          <p class="welcome-lead">複数の店舗を管理する仕組みのご提案です。<br>実際の画面を操作しながら、日々の経営に役立つかを確認できます。</p>
+          <div class="welcome-buttons"><button class="button primary" type="button" data-go="overview">デモを見る →</button><button class="button" type="button" data-start-tour>説明に沿って見る</button></div>
+          <p class="welcome-sample">店舗名・数字・AIのコメントは説明用の例です。<br>実際の顧客情報や外部サービスには接続していません。</p>
+        </div>
+        <aside class="welcome-decision">
+          <span class="eyebrow">今回、ご検討いただきたいこと</span>
+          <h2>この仕組みが、<br>自社の経営に役立ちそうか。</h2>
+          <p>まず1〜2店舗で試すなら、どの業務から始めるか。デモを見ながら一緒に考えるための資料です。</p>
+          <div class="welcome-decision-note">いま使っている会員管理・決済・入退館の仕組みを活かす案です。連携できる情報は、導入前に確認します。</div>
+        </aside>
+      </div>
+      <section class="welcome-purpose" aria-labelledby="welcome-purpose-title">
+        <div class="section-heading"><h2 id="welcome-purpose-title">日々の「知りたい」を、一つの画面に。</h2><span>このデモで体験する3つのこと</span></div>
+        <ol class="welcome-flow">
+          <li><span class="welcome-step">01</span><p class="welcome-question">どの店舗が順調？</p><h3>全店舗の状況を見る</h3><p>売上・利益・会員数をまとめて、店舗ごとに比較できます。</p></li>
+          <li><span class="welcome-step">02</span><p class="welcome-question">どこを確認すればいい？</p><h3>気になる店舗を確認する</h3><p>退会の増加や、まだ対応できていない件数を詳しく見られます。</p></li>
+          <li><span class="welcome-step">03</span><p class="welcome-question">次に、誰が動く？</p><h3>担当と期限を決める</h3><p>誰が、いつまでに対応するかを決め、その後の進み具合を確認できます。</p></li>
+        </ol>
+      </section>
+      <div class="welcome-bottom"><p>続く画面では、条件を変えた売上の計算と、少数の店舗から試す進め方もご覧いただけます。</p><button class="text-button" type="button" data-go="overview">経営の画面へ進む →</button></div>
+    </section>`;
   }
   function metrics(id='all') {
     const s=D.summary(id);
@@ -83,10 +112,10 @@
   function updateTour() {
     document.getElementById('tour').hidden=!state.tour;
     document.body.classList.toggle('tour-active',state.tour);
-    document.getElementById('tour-start').textContent=state.tour?'プレゼン中':'3分プレゼン開始 ↗';
+    document.getElementById('tour-start').textContent=state.tour?'説明中':'説明に沿って見る ↗';
     if(!state.tour) return;
     const step=tourSteps[state.step];
-    document.getElementById('tour-count').textContent=`0${state.step+1} / 05`;
+    document.getElementById('tour-count').textContent=`${String(state.step+1).padStart(2,'0')} / ${String(tourSteps.length).padStart(2,'0')}`;
     document.getElementById('tour-title').textContent=step.title;
     document.getElementById('tour-note').textContent=step.note;
     if(state.view==='stores') {
@@ -95,11 +124,11 @@
       document.getElementById('tour-note').textContent=`退会率 ${pct(s.previousChurnPercent)}% → ${pct(s.churnPercent)}%。未対応 ${s.pending}件。次に店舗Bの対応案を確認します。`;
     }
     document.getElementById('tour-prev').disabled=state.step===0;
-    document.getElementById('tour-next').textContent=state.step===4?'プレゼン終了 ✓':'次へ →';
+    document.getElementById('tour-next').textContent=state.step===tourSteps.length-1?'説明を終了 ✓':'次へ →';
   }
   function render() {
     if(chartObserver) chartObserver.disconnect();
-    main.innerHTML=({overview,stores,actions,impact,rollout})[state.view]();
+    main.innerHTML=({intro:introduction,overview,stores,actions,impact,rollout})[state.view]();
     document.getElementById('breadcrumb-current').textContent=labels[state.view];
     document.querySelectorAll('#navigation [data-view]').forEach(b=>{
       if(b.dataset.view===state.view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
@@ -132,6 +161,7 @@
   main.addEventListener('click',e=>{
     const b=e.target.closest('button');if(!b)return;
     if(b.dataset.go)navigate(b.dataset.go);
+    else if(b.hasAttribute('data-start-tour'))startTour();
     else if(b.dataset.store){state.store=b.dataset.store;navigate('stores');}
     else if(b.dataset.selectStore){state.store=b.dataset.selectStore;render();}
     else if(b.dataset.metric){state.metric=b.dataset.metric;render();}
@@ -166,13 +196,15 @@
     dialog.close();render();notify('デモ内のアクションに追加しました。外部への通知はありません。');
   });
   document.getElementById('dialog-close').addEventListener('click',()=>dialog.close());
-  document.getElementById('tour-start').addEventListener('click',()=>{
-    state.tour=true;state.step=0;state.store='B';navigate('overview');
-  });
+  function startTour() {
+    state.tour=true;state.step=0;state.store='B';navigate(tourSteps[0].view);
+  }
+  document.getElementById('tour-start').addEventListener('click',startTour);
   function moveTour(delta) {
-    if(delta>0&&state.step===4){state.tour=false;updateTour();notify('プレゼン終了。各画面は引き続き自由に操作できます。');return;}
-    state.step=Math.max(0,Math.min(4,state.step+delta));
-    if(state.step===1)state.store='B';
+    const lastStep=tourSteps.length-1;
+    if(delta>0&&state.step===lastStep){state.tour=false;updateTour();notify('説明を終了しました。各画面は引き続き自由に操作できます。');return;}
+    state.step=Math.max(0,Math.min(lastStep,state.step+delta));
+    if(tourSteps[state.step].view==='stores')state.store='B';
     navigate(tourSteps[state.step].view);
   }
   document.getElementById('tour-prev').addEventListener('click',()=>moveTour(-1));
@@ -180,7 +212,7 @@
   document.getElementById('tour-close').addEventListener('click',()=>{state.tour=false;updateTour();});
   document.getElementById('reset-demo').addEventListener('click',()=>{
     state.task=null;state.people=10;state.fee=180;state.metric='revenue';state.store='B';state.tour=false;state.step=0;
-    navigate('overview');notify('デモを初期状態に戻しました。');
+    navigate('intro');notify('デモを初期状態に戻しました。');
   });
   window.addEventListener('keydown',e=>{
     if(!state.tour||dialog.open||['INPUT','SELECT','TEXTAREA','BUTTON'].includes(document.activeElement.tagName))return;

@@ -9,3 +9,38 @@
 @media(max-width:360px){.metric-value{font-size:23px}.metric-value .unit-prefix{font-size:10px;margin-right:3px}.metric-value small{font-size:11px}.metric{padding-inline:11px}.tour-copy{gap:8px}.tour-copy strong{font-size:10px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
 @media print{.sidebar,.topbar,.tour-bar,.app-footer,#toast,.button,.text-button{display:none!important}.app-shell{display:block}body,main{background:#fff}main{padding:0}.panel,.metrics,.store-card{break-inside:avoid}}
+
+/* Introduction: explain the proposal before showing the numbers. */
+.welcome-page{padding-top:10px}
+.welcome-hero{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:32px;align-items:center;padding:10px 0 38px}
+.welcome-copy .eyebrow{font-size:12px;letter-spacing:.08em;margin-bottom:20px}
+.welcome-copy h1{font-size:clamp(26px,2.65vw,38px);line-height:1.65;letter-spacing:-.045em;font-weight:650}
+.welcome-lead{font-size:14px;color:#586b69;line-height:2;margin-top:22px}
+.welcome-buttons{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.welcome-buttons .button{padding:13px 19px;font-size:13px;min-height:46px}
+.welcome-sample{font-size:11px;line-height:1.9;color:var(--muted);margin-top:17px}
+.welcome-decision{background:#e8eee2;border:1px solid #dbe4d4;border-radius:16px;padding:28px;position:relative}
+.welcome-decision:before{content:"";display:block;width:32px;height:3px;background:var(--orange);margin-bottom:22px}
+.welcome-decision .eyebrow{font-size:11px;letter-spacing:.04em;margin-bottom:13px}
+.welcome-decision h2{font-size:22px;line-height:1.8;letter-spacing:-.04em}
+.welcome-decision>p{font-size:13px;line-height:2;margin-top:16px;color:#52684f}
+.welcome-decision-note{font-size:11px;line-height:1.9;color:#5f705a;margin-top:22px;padding-top:18px;border-top:1px solid #cfdac8}
+.welcome-purpose{border-top:1px solid #dbe2d9;padding-top:27px}
+.welcome-purpose .section-heading{margin-bottom:18px;align-items:baseline;flex-wrap:wrap}
+.welcome-purpose h2{font-size:19px;font-weight:600}
+.welcome-purpose .section-heading span{font-size:11px}
+.welcome-flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;list-style:none;padding:0;margin:0;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.welcome-flow li{padding:24px;min-width:0;position:relative}
+.welcome-flow li+li{border-left:1px solid var(--line)}
+.welcome-step{display:block;font-size:12px;font-variant-numeric:tabular-nums;color:#8a9d88;letter-spacing:.1em;margin-bottom:18px}
+.welcome-flow .welcome-question{font-size:12px;color:#687f67;margin-bottom:5px}
+.welcome-flow h3{font-size:17px;line-height:1.7;margin-bottom:10px;letter-spacing:-.025em}
+.welcome-flow li>p:last-child{font-size:12px;line-height:1.9;color:var(--muted)}
+.welcome-bottom{display:flex;justify-content:space-between;gap:22px;align-items:baseline;padding:20px 0 8px}
+.welcome-bottom p{font-size:11px;line-height:1.9;color:var(--muted);max-width:650px}
+.welcome-bottom .text-button{flex-shrink:0}
+@media(max-width:1150px){.welcome-hero{gap:24px}.welcome-decision{padding:23px}.welcome-decision h2{font-size:20px}.welcome-flow li{padding:21px}.welcome-flow h3{font-size:15px}.welcome-copy h1{font-size:30px}}
+@media(max-width:960px){.welcome-hero{grid-template-columns:1fr;gap:28px}.welcome-copy h1{font-size:34px}.welcome-decision{padding:24px}.welcome-decision h2 br{display:none}.welcome-decision:before{margin-bottom:15px}.welcome-decision>p{margin-top:10px}.welcome-decision-note{margin-top:16px;padding-top:14px}.welcome-flow li{padding:19px}.welcome-flow h3{font-size:15px}.welcome-bottom{flex-wrap:wrap;gap:10px}}
+@media(max-width:760px){.welcome-page{padding-top:0}.welcome-hero{padding-top:0;padding-bottom:28px}.welcome-copy h1{font-size:30px}.welcome-flow{grid-template-columns:1fr}.welcome-flow li{padding:22px 24px 22px 62px}.welcome-flow li+li{border-left:0;border-top:1px solid var(--line)}.welcome-step{position:absolute;top:24px;left:24px;margin:0}.welcome-flow h3{font-size:17px}.welcome-purpose{padding-top:23px}.welcome-purpose h2{font-size:18px}.welcome-purpose .section-heading{gap:5px}.welcome-lead{font-size:13px;margin-top:18px}.welcome-copy .eyebrow{margin-bottom:15px}}
+@media(max-width:420px){.welcome-copy h1{font-size:26px;line-height:1.65}.welcome-copy h1 br,.welcome-lead br,.welcome-sample br{display:none}.welcome-buttons{display:grid;grid-template-columns:1fr;margin-top:21px;gap:9px}.welcome-buttons .button{font-size:13px}.welcome-decision{padding:21px}.welcome-decision h2{font-size:20px}.welcome-decision h2 br{display:initial}.welcome-purpose h2{font-size:17px}.welcome-flow li{padding-left:54px}.welcome-step{left:20px}.welcome-bottom{padding-top:17px}}
+@media print{.welcome-hero{grid-template-columns:1.6fr 1fr}.welcome-copy h1{font-size:27px}.welcome-decision,.welcome-flow li{break-inside:avoid}.welcome-buttons{display:none}.welcome-flow{grid-template-columns:repeat(3,minmax(0,1fr))}.welcome-flow li{padding:20px}.welcome-step{position:static}}
