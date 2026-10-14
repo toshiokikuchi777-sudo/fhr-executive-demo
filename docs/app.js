@@ -1,20 +1,23 @@
 (() => {
   'use strict';
   const D = window.FHRData;
+  const R = window.RetentionData;
   const modelName = id => D.stores.find(store=>store.id===id).name;
   const main = document.getElementById('main');
   const dialog = document.getElementById('action-dialog');
-  const labels = {intro:'この資料について',overview:'経営概況',stores:'店舗の課題',actions:'改善アクション',impact:'効果を考える',rollout:'導入プラン'};
-  const state = {view:'intro',country:'all',store:'B',metric:'revenue',task:null,people:10,fee:180,tour:false,step:0};
+  const labels = {intro:'この資料について',overview:'経営概況',stores:'店舗の課題',retention:'会員の継続支援',actions:'改善アクション',impact:'効果を考える',rollout:'導入プラン'};
+  const state = {view:'intro',country:'all',store:'B',metric:'revenue',task:null,people:10,fee:180,tour:false,step:0,retentionCountry:'all',retentionStore:'all',retentionId:R.cases[0].id,retentionRecords:R.initialRecords()};
   const tourSteps = [
     {view:'intro',title:'LAVICHE / AMZ GROUPの店舗管理を考える',note:'国内AF・VISPO24・マレーシアAFの3モデルで、一元管理とAIによる報告づくりを体験します。実店舗の数や業績を示す資料ではありません。'},
     {view:'overview',title:'全体から、国別、店舗モデル別へ',note:'フィットネス3モデルの架空実績を円換算で比較します。日本・マレーシアを切り替え、各モデルの詳細を確認できます。'},
     {view:'stores',title:`${modelName('B')}の課題を、数字で確かめる`,note:'架空の課題を使った説明例です。金額は現地通貨で表示し、退会率と未対応フォローから確認の手順を体験します。'},
+    {view:'retention',title:'兆候の確認から、対応と結果の記録へ',note:'10月14日時点の架空6件を使う別デモです。担当・期限・進捗を記録し、連絡済みと確認結果を分けて扱います。次は9月の店舗改善例に戻ります。'},
     {view:'actions',title:'提案を、担当と期限のある行動にする',note:'「担当・期限を決める」を押して、デモ内のアクションに追加してください。'},
     {view:'impact',title:'実行と成果を分けて、効果を測る',note:'対応の完了率と退会率を追います。売上への影響は仮定を変えて試算できます。'},
     {view:'rollout',title:'小さく試して、導入を判断する',note:'最初は1〜2店舗。データの利用条件と効果を確認してから拡大します。'}
   ];
   const number = n => new Intl.NumberFormat('ja-JP',{maximumFractionDigits:0}).format(n);
+  const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
   const pct = n => n.toFixed(1);
   const signed = n => `${n>=0?'+':''}${pct(n)}`;
   const currencySymbol = currency => ({JPY:'¥',MYR:'RM'})[currency];
@@ -62,9 +65,15 @@
           <article class="management-row"><div class="management-topic"><h3>売上・利益・経費</h3><small>売上、費用、店舗ごとの利益</small></div><p class="management-benefit">店舗ごとの差を比べ、売上や経費を見直すきっかけに。</p><span class="badge">デモで確認</span></article>
           <article class="management-row"><div class="management-topic"><h3>会員の増減</h3><small>会員数、入会数、退会数</small></div><p class="management-benefit">退会が増えている店舗に気づき、必要なフォローを検討。</p><span class="badge">デモで確認</span></article>
           <article class="management-row"><div class="management-topic"><h3>スタッフの対応</h3><small>未対応の件数、担当者、期限、進み具合</small></div><p class="management-benefit">誰が、いつまでに動くかを共有し、対応漏れを防ぐ。</p><span class="badge">デモで確認</span></article>
+          <article class="management-row"><div class="management-topic"><h3>会員の継続支援</h3><small>来館の変化、対応の進捗、確認できた結果</small></div><p class="management-benefit">兆候の根拠を確認し、担当・期限・対応結果を記録する流れを体験。</p><span class="badge">匿名の架空6件</span></article>
           <article class="management-row"><div class="management-topic"><h3>集客・個別トレーニング</h3><small>見学予約、契約数、広告費など</small></div><p class="management-benefit">問い合わせから契約までを振り返り、集客や提案を改善。</p><span class="badge warning">導入時の追加案</span></article>
         </div>
-        <p class="welcome-detail-note">現在のデモは店舗ごとの集計と対応管理の画面例です。会員の詳しい情報や、見学・広告などの連携範囲は導入前に確認します。</p>
+        <p class="welcome-detail-note">店舗ごとの9月実績と、10月14日時点の継続支援6件は別の架空データです。実際の会員情報や、見学・広告などの連携範囲は導入前に確認します。</p>
+      </section>
+      <section class="welcome-section" aria-labelledby="retention-intro-title">
+        <div class="welcome-section-heading"><span class="eyebrow">継続支援の操作デモ</span><h2 id="retention-intro-title">気になる兆候から、次のフォローへ。</h2><p>来館頻度の変化などの根拠を確認し、担当者・期限・進捗・確認結果を記録。経営者は、店舗ごとの対応状況をまとめて把握できます。</p></div>
+        <button type="button" class="button primary" data-go-retention="all">匿名ケースで継続支援を試す →</button>
+        <p class="welcome-detail-note">兆候は説明用のルールによる判定で、AIの退会予測ではありません。本人への連絡や外部送信はなく、記録は再読み込み・リセットで消えます。本番では個人データを承認された環境で扱い、経営者には許可された集計を共有する設計です。</p>
       </section>
       <section class="welcome-ai" aria-labelledby="ai-value-title">
         <div class="welcome-section-heading"><span class="badge">本番導入時の活用案</span><span class="eyebrow">AIは何を手伝う？</span><h2 id="ai-value-title">AIで、確認と報告の手間を減らす。</h2><p>AIが確認の準備を手伝い、経営者や店舗責任者が内容を確かめて判断します。</p></div>
@@ -125,7 +134,7 @@
     return intro('EXECUTIVE BRIEF / LAVICHE · AMZ GROUP','国内外の店舗を、ひとつの画面で。','フィットネス3モデルの架空実績を円換算で比較。会社全事業や実際の全店舗の合計ではありません。') +
       `<div class="global-toolbar"><div><strong>${name} · ${s.countryCount}か国 / ${s.storeCount}モデル</strong><p>集計：2026年9月／円換算・架空実績</p></div><div class="segmented" aria-label="経営概況の対象国"><button type="button" data-country="all" aria-pressed="${state.country==='all'}">全店舗（モデル）</button>${D.countries.map(country=>`<button type="button" data-country="${country.id}" aria-pressed="${state.country===country.id}">${country.name}</button>`).join('')}</div></div>` + metrics(state.country) +
       `<p class="currency-note">${currencyNote}</p>` + countryCards() +
-      `<div class="main-grid"><section class="panel"><div class="panel-head"><div><h3>${name}の業績推移</h3><p>2026年4月 — 9月 / 円換算・単位：万円 / 架空の月次実績</p></div><div class="segmented" aria-label="表示する指標"><button type="button" data-metric="revenue" aria-pressed="${state.metric==='revenue'}">売上</button><button type="button" data-metric="profit" aria-pressed="${state.metric==='profit'}">営業利益</button></div></div><div id="trend-chart" class="trend" role="img" aria-label="6か月の業績推移"></div><p class="chart-summary">${name}・9月（円換算）：売上 ${money(s.revenue)} − 費用 ${money(s.expenses)} = 営業利益 ${money(s.profit)}</p></section>${overviewFocus()}</div>` + storeCards();
+      `<div class="main-grid"><section class="panel"><div class="panel-head"><div><h3>${name}の業績推移</h3><p>2026年4月 — 9月 / 円換算・単位：万円 / 架空の月次実績</p></div><div class="segmented" aria-label="表示する指標"><button type="button" data-metric="revenue" aria-pressed="${state.metric==='revenue'}">売上</button><button type="button" data-metric="profit" aria-pressed="${state.metric==='profit'}">営業利益</button></div></div><div id="trend-chart" class="trend" role="img" aria-label="6か月の業績推移"></div><p class="chart-summary">${name}・9月（円換算）：売上 ${money(s.revenue)} − 費用 ${money(s.expenses)} = 営業利益 ${money(s.profit)}</p></section>${overviewFocus()}</div>` + storeCards() + retentionLink(state.country);
   }
   function stores() {
     const id=state.store;
@@ -134,7 +143,79 @@
     const isB=id==='B';
     return intro('STORE INSIGHT',`${store.name}の変化を、数字で確認。`,`説明用モデルの架空実績です。${countryName(store.country)}・現地通貨 ${s.currency}（${currencySymbol(s.currency)}）で表示。実店舗の業績や課題ではありません。`) +
       `<button type="button" class="text-button" data-gooverview>← 全モデルの経営概況へ</button><div class="store-selector" aria-label="店舗を選択">${D.stores.map(x=>`<button type="button" data-select-store="${x.id}" aria-pressed="${x.id===id}">${countryName(x.country)} · ${x.name}</button>`).join('')}</div>` + metrics(id,'local') +
-      `<div class="analysis-grid"><section class="panel"><div class="panel-head"><h3>退会率の変化</h3><span class="badge ${isB?'warning':''}">${isB?'前月比 +1.0pt':'前月と同水準'}</span></div><div class="comparison"><div class="comparison-cell"><span>8月</span><strong>${pct(s.previousChurnPercent)}<small>%</small></strong><p>退会 ${store.previousLeaves}人 / 月初 ${store.previousOpening}人</p></div><span aria-hidden="true">→</span><div class="comparison-cell ${isB?'current':''}"><span>9月</span><strong>${pct(s.churnPercent)}<small>%</small></strong><p>退会 ${s.leaves}人 / 月初 ${s.opening}人</p></div></div><p class="formula">退会率 = 月間退会者数 ÷ 月初会員数 × 100</p></section><section class="panel"><div class="panel-head"><h3>店舗に確認する数字</h3><span class="badge">9月末時点</span></div><ul class="evidence-list"><li><span>フォロー対象</span><strong>${s.followupsTotal}<small> 件</small></strong></li><li><span>対応完了</span><strong>${s.followupsCompleted}<small> 件</small></strong></li><li><span>未対応</span><strong class="${isB?'negative':''}">${s.pending}<small> 件</small></strong></li><li><span>対応完了率</span><strong>${pct(s.completionPercent)}<small> %</small></strong></li></ul></section></div><section class="ai-panel"><span class="ai-mark">AI</span><div class="ai-content"><h3>AI提案の表示例</h3><p>${isB?'退会率が前月より1.0ポイント上昇し、12件のフォローが未対応です。まず未対応案件の内容と担当状況を、店舗責任者が確認することを提案します。':`退会率は前月と同水準です。未対応${s.pending}件の状況を確認し、通常のフォローを継続することを提案します。`}</p><small>事前に用意した提案例です。未対応と退会の因果関係は未確認で、AIによる予測・自動判断ではありません。</small>${isB?'<button type="button" class="button primary" data-go="actions">改善アクションを確認 →</button>':`<button type="button" class="button" data-select-store="B">${modelName('B')}を見る →</button>`}</div></section><details class="source-details"><summary>数値の出所・集計範囲</summary><p>${store.brand} / ${store.operator}の事業情報をもとにした説明モデルです。数値はすべて架空で、実際の店舗には対応していません。売上・費用は月次集計、会員数は月初＋入会−退会、フォローは対象案件数から集計しています。実際の導入では、利用許可のあるデータのみを連携し、対象期間・更新日時・集計ルールを表示します。</p></details>`;
+      `<div class="analysis-grid"><section class="panel"><div class="panel-head"><h3>退会率の変化</h3><span class="badge ${isB?'warning':''}">${isB?'前月比 +1.0pt':'前月と同水準'}</span></div><div class="comparison"><div class="comparison-cell"><span>8月</span><strong>${pct(s.previousChurnPercent)}<small>%</small></strong><p>退会 ${store.previousLeaves}人 / 月初 ${store.previousOpening}人</p></div><span aria-hidden="true">→</span><div class="comparison-cell ${isB?'current':''}"><span>9月</span><strong>${pct(s.churnPercent)}<small>%</small></strong><p>退会 ${s.leaves}人 / 月初 ${s.opening}人</p></div></div><p class="formula">退会率 = 月間退会者数 ÷ 月初会員数 × 100</p></section><section class="panel"><div class="panel-head"><h3>店舗に確認する数字</h3><span class="badge">9月末時点</span></div><ul class="evidence-list"><li><span>フォロー対象</span><strong>${s.followupsTotal}<small> 件</small></strong></li><li><span>対応完了</span><strong>${s.followupsCompleted}<small> 件</small></strong></li><li><span>未対応</span><strong class="${isB?'negative':''}">${s.pending}<small> 件</small></strong></li><li><span>対応完了率</span><strong>${pct(s.completionPercent)}<small> %</small></strong></li></ul></section></div><section class="ai-panel"><span class="ai-mark">AI</span><div class="ai-content"><h3>AI提案の表示例</h3><p>${isB?'退会率が前月より1.0ポイント上昇し、12件のフォローが未対応です。まず未対応案件の内容と担当状況を、店舗責任者が確認することを提案します。':`退会率は前月と同水準です。未対応${s.pending}件の状況を確認し、通常のフォローを継続することを提案します。`}</p><small>事前に用意した提案例です。未対応と退会の因果関係は未確認で、AIによる予測・自動判断ではありません。</small>${isB?'<button type="button" class="button primary" data-go="actions">改善アクションを確認 →</button>':`<button type="button" class="button" data-select-store="B">${modelName('B')}を見る →</button>`}</div></section><details class="source-details"><summary>数値の出所・集計範囲</summary><p>${store.brand} / ${store.operator}の事業情報をもとにした説明モデルです。数値はすべて架空で、実際の店舗には対応していません。売上・費用は月次集計、会員数は月初＋入会−退会、フォローは対象案件数から集計しています。実際の導入では、利用許可のあるデータのみを連携し、対象期間・更新日時・集計ルールを表示します。</p></details>` + retentionLink(id);
+  }
+  function retentionLink(scope='all') {
+    return `<section class="rollout-bottom"><div><h3>会員の継続支援を、匿名ケースで体験。</h3><p>10月14日時点の架空ケースを確認し、担当・対応・結果を記録できます。9月の実績とは別のデモです。</p></div><button type="button" class="button primary" data-go-retention="${escapeHTML(scope)}">会員の継続支援へ →</button></section>`;
+  }
+  function retentionScope() {
+    return state.retentionStore==='all'?state.retentionCountry:state.retentionStore;
+  }
+  function retentionStores() {
+    return D.stores.filter(store=>state.retentionCountry==='all'||store.country===state.retentionCountry);
+  }
+  function retentionCases() {
+    const storeIds=retentionStores().map(store=>store.id);
+    return R.cases.filter(item=>storeIds.includes(item.storeId)&&(state.retentionStore==='all'||item.storeId===state.retentionStore));
+  }
+  function selectRetentionScope(scope='all') {
+    const store=D.stores.find(item=>item.id===scope);
+    if(store) {
+      state.retentionCountry=store.country;
+      state.retentionStore=store.id;
+    } else if(scope==='all'||D.countries.some(country=>country.id===scope)) {
+      state.retentionCountry=scope;
+      state.retentionStore='all';
+    } else return;
+    const cases=retentionCases();
+    if(!cases.some(item=>item.id===state.retentionId))state.retentionId=cases[0]?.id||'';
+  }
+  function retentionHistory(record) {
+    if(!record.history.length)return '<p class="sim-note">まだ記録はありません。担当・期限・進捗を選び、デモ内に記録してください。</p>';
+    return `<ol class="retention-history">${record.history.slice().reverse().map((entry,index)=>`<li><div class="retention-history-head"><strong>記録 ${record.history.length-index}</strong><span class="badge">${escapeHTML(R.statuses[entry.status])}</span></div><p>${escapeHTML(entry.owner)} / 期限 ${escapeHTML(entry.due)}</p><p>確認結果：${escapeHTML(R.outcomes[entry.outcome])}</p><p>${escapeHTML(entry.note)||'メモなし'}</p></li>`).join('')}</ol>`;
+  }
+  function retentionDetail(item) {
+    if(!item)return '<section class="panel retention-detail"><h2>対象のケースはありません。</h2><p class="intro-note">国・店舗の選択を変更してください。</p></section>';
+    const record=state.retentionRecords[item.id];
+    const signals=R.signals(item);
+    const closed=record.status==='closed';
+    return `<section class="panel retention-detail" aria-labelledby="retention-detail-title">
+      <div class="panel-head"><div><span class="eyebrow">${escapeHTML(modelName(item.storeId))} / 匿名の架空ケース</span><h2 id="retention-detail-title" tabindex="-1">${escapeHTML(item.id)}</h2></div><span class="badge${record.status==='unassigned'?' warning':''}">${escapeHTML(R.statuses[record.status])}</span></div>
+      <h3>確認する兆候と根拠</h3>
+      <ul class="retention-signals">${signals.length?signals.map(signal=>`<li>${escapeHTML(signal)}</li>`).join(''):'<li>説明用の判定ルールへの該当はありません。</li>'}</ul>
+      <dl class="retention-facts"><div><dt>その前28日間の来館</dt><dd>${number(item.previousVisits)}<small> 回</small></dd></div><div><dt>直近28日間の来館</dt><dd>${number(item.currentVisits)}<small> 回</small></dd></div><div><dt>最終来館から</dt><dd>${number(item.daysSinceVisit)}<small> 日</small></dd></div></dl>
+      <p class="intro-note">決済確認事項：${item.paymentIssue?'あり':'なし'} / 契約更新まで：${Number.isInteger(item.renewalDays)?`${item.renewalDays}日`:'未設定'}。すべて説明用の値で、実際の会員情報ではありません。</p>
+      <details class="source-details"><summary>兆候を表示するルール</summary><p>直近28日間と、その前28日間の来館数を比較します。前期間4回以上かつ来館半減、14日以上来館なし、決済要確認、更新30日以内を確認のきっかけとして表示します。これらだけで退会を予測せず、変化の理由はスタッフが確認します。</p></details>
+      <div class="retention-proposal"><span class="badge">事前に用意した対応案</span><h3>まず状況を確かめ、必要な支援を考える。</h3><p>来館状況や困っていることを確認し、本人の希望に合うフォローを店舗で検討する想定です。${item.paymentIssue?'決済については、承認された環境で状況を確認します。':''}連絡方法・内容・実施可否は、担当者が確認して判断します。</p><p class="sim-note">兆候は説明用ルールによる判定です。AIによる退会予測や本人への自動連絡は実行していません。</p></div>
+      <h3>担当・対応・確認結果を記録</h3>
+      <form id="retention-form" class="retention-form" data-case-id="${escapeHTML(item.id)}">
+        <label class="field">担当者<select id="retention-owner" name="owner" required><option value="">担当者を選択</option>${R.owners(item.storeId).map(owner=>`<option value="${escapeHTML(owner)}"${record.owner===owner?' selected':''}>${escapeHTML(owner)}</option>`).join('')}</select></label>
+        <label class="field">対応期限<input id="retention-due" name="due" type="date" min="${R.asOf}" max="2026-12-31" value="${escapeHTML(record.due)}" required></label>
+        <label class="field">進捗<select id="retention-status" name="status" required><option value="" disabled${record.status==='unassigned'?' selected':''}>進捗を選択</option>${['planned','contacted','closed'].map(status=>`<option value="${status}"${record.status===status?' selected':''}>${escapeHTML(R.statuses[status])}</option>`).join('')}</select></label>
+        <label class="field">確認結果<select id="retention-outcome" name="outcome"${closed?' required':' disabled'} aria-describedby="retention-outcome-help"><option value=""${closed&&record.outcome==='unknown'?' selected':''}>確認した結果を選択</option><option value="unknown" hidden${!closed?' selected':''}>経過確認中</option>${['resumed','continuing','cancelled'].map(outcome=>`<option value="${outcome}"${closed&&record.outcome===outcome?' selected':''}>${escapeHTML(R.outcomes[outcome])}</option>`).join('')}</select></label>
+        <p id="retention-outcome-help" class="sim-note retention-form-wide">${closed?'確認できた結果を選んでください。連絡しただけでは、来館再開・継続意向の確認にはなりません。':'「結果記録済み」を選ぶと、確認できた結果の入力が必要になります。対応予定・連絡済みは「経過確認中」として扱います。'}</p>
+        <label class="field retention-form-wide">対応メモ<textarea id="retention-note" name="note" rows="3" maxlength="240" aria-describedby="retention-note-help" placeholder="架空ケースの対応メモを入力。個人情報は入力しないでください。">${escapeHTML(record.note)}</textarea><small id="retention-note-help"><span id="retention-note-count">${record.note.length}</span> / 240字</small></label>
+        <p id="retention-error" class="retention-error retention-form-wide" role="alert" hidden></p>
+        <div class="retention-form-wide"><button type="submit" class="button primary">デモ内に記録する</button><p class="sim-note">このブラウザー画面内だけの記録です。再読み込み・リセットで消去され、本人やスタッフへの通知・外部送信はありません。</p></div>
+      </form>
+      <h3>記録履歴</h3>${retentionHistory(record)}
+    </section>`;
+  }
+  function retention() {
+    const scope=retentionScope();
+    const summary=R.summary(state.retentionRecords,scope);
+    const cases=retentionCases();
+    const selected=cases.find(item=>item.id===state.retentionId)||cases[0];
+    if(selected)state.retentionId=selected.id;
+    const stores=retentionStores().filter(store=>state.retentionStore==='all'||store.id===state.retentionStore);
+    return `<div class="page-intro"><div><span class="eyebrow">RETENTION SUPPORT / 会員の継続支援</span><h1>気になる兆候を、次のフォローへ。</h1><p class="intro-note">2026年10月14日時点の匿名の説明用6ケースです。全会員から抽出した件数や、全会員のリスク分布ではありません。9月の退会率・未対応${D.summary().pending}件とは別のデモで、記録しても9月の実績は変わりません。</p></div><div class="period">CASE DEMO<strong>${R.asOf.replaceAll('-','.')}</strong>架空ケースの確認日</div></div>
+      <div class="retention-toolbar"><label class="field">国<select id="retention-country"><option value="all"${state.retentionCountry==='all'?' selected':''}>全対象国</option>${D.countries.map(country=>`<option value="${country.id}"${state.retentionCountry===country.id?' selected':''}>${escapeHTML(country.name)}</option>`).join('')}</select></label><label class="field">店舗モデル<select id="retention-store"><option value="all"${state.retentionStore==='all'?' selected':''}>選択した国の全モデル</option>${retentionStores().map(store=>`<option value="${store.id}"${state.retentionStore===store.id?' selected':''}>${escapeHTML(store.name)}</option>`).join('')}</select></label><button type="button" class="button" data-go-retention="all">全6件に戻す</button></div>
+      <div class="retention-summary" aria-label="経営者向け対応サマリー"><div><span>対象ケース</span><strong>${summary.total}<small> 件</small></strong></div><div><span>未着手</span><strong>${summary.unassigned}<small> 件</small></strong></div><div><span>対応中</span><strong>${summary.planned+summary.contacted}<small> 件</small></strong></div><div><span>結果記録済み</span><strong>${summary.closed}<small> 件</small></strong></div></div>
+      <p class="sim-note">対応中は「対応予定＋連絡済み」。確認結果：来館再開 ${summary.resumed}件 / 継続意向 ${summary.continuing}件 / 退会確認 ${summary.cancelled}件。結果の記録は、将来の退会防止効果を証明するものではありません。</p>
+      <div class="section-heading"><h3>店舗ごとの対応状況</h3><span>選択中の範囲 / 10月14日の架空ケース</span></div>
+      <div class="retention-store-grid">${stores.map(store=>{const s=R.summary(state.retentionRecords,store.id);return `<button type="button" class="panel" data-retention-store="${store.id}" aria-label="${escapeHTML(store.name)}のケースに絞る"><h3>${escapeHTML(store.name)}</h3><p>対象 ${s.total}件 / 未着手 ${s.unassigned}件</p><p>対応中 ${s.planned+s.contacted}件 / 結果記録済み ${s.closed}件</p></button>`;}).join('')}</div>
+      <div class="retention-layout"><section class="panel retention-case-list" aria-labelledby="retention-case-list-title"><div class="panel-head"><h2 id="retention-case-list-title">匿名ケース</h2><span class="badge">${cases.length}件</span></div>${cases.map(item=>{const record=state.retentionRecords[item.id];return `<button type="button" class="retention-case${selected?.id===item.id?' active':''}" data-retention-case="${escapeHTML(item.id)}" aria-pressed="${selected?.id===item.id}"><div class="retention-case-head"><strong>${escapeHTML(item.id)}</strong><span class="badge${record.status==='unassigned'?' warning':''}">${escapeHTML(R.statuses[record.status])}</span></div><p>${escapeHTML(modelName(item.storeId))}</p><p>${escapeHTML(R.signals(item)[0]||'状況を確認')}</p></button>`;}).join('')}</section>${retentionDetail(selected)}</div>
+      <p class="sim-note">本番では、個人データを承認された環境で管理し、経営者には許可された集計を共有する設計です。このデモのケースは架空で、役割ごとの閲覧権限は未実装です。</p>`;
   }
   function actions() {
     const task=state.task;
@@ -197,14 +278,14 @@
       const s=D.summary(state.store);
       const store=D.stores.find(item=>item.id===state.store);
       document.getElementById('tour-title').textContent=`${store.name}の状況を、数字で確かめる`;
-      document.getElementById('tour-note').textContent=`金額は現地通貨 ${store.currency}。退会率 ${pct(s.previousChurnPercent)}% → ${pct(s.churnPercent)}%。未対応 ${s.pending}件。次に${modelName('B')}の架空の対応案を確認します。`;
+      document.getElementById('tour-note').textContent=`金額は現地通貨 ${store.currency}。退会率 ${pct(s.previousChurnPercent)}% → ${pct(s.churnPercent)}%。未対応 ${s.pending}件。次は10月の別デモで、匿名ケースの継続支援を体験します。`;
     }
     document.getElementById('tour-prev').disabled=state.step===0;
     document.getElementById('tour-next').textContent=state.step===tourSteps.length-1?'説明を終了 ✓':'次へ →';
   }
   function render() {
     if(chartObserver) chartObserver.disconnect();
-    main.innerHTML=({intro:introduction,overview,stores,actions,impact,rollout})[state.view]();
+    main.innerHTML=({intro:introduction,overview,stores,retention,actions,impact,rollout})[state.view]();
     document.getElementById('breadcrumb-current').textContent=labels[state.view];
     document.querySelectorAll('#navigation [data-view]').forEach(b=>{
       if(b.dataset.view===state.view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
@@ -237,6 +318,9 @@
   main.addEventListener('click',e=>{
     const b=e.target.closest('button');if(!b)return;
     if(b.hasAttribute('data-gooverview')){state.country='all';navigate('overview');}
+    else if(b.hasAttribute('data-go-retention')){selectRetentionScope(b.dataset.goRetention||'all');navigate('retention');}
+    else if(b.dataset.retentionStore){selectRetentionScope(b.dataset.retentionStore);render();document.getElementById('retention-detail-title')?.focus();}
+    else if(b.dataset.retentionCase&&retentionCases().some(item=>item.id===b.dataset.retentionCase)){state.retentionId=b.dataset.retentionCase;render();document.getElementById('retention-detail-title')?.focus();}
     else if(b.dataset.go)navigate(b.dataset.go);
     else if(b.hasAttribute('data-start-tour'))startTour();
     else if(b.dataset.country && (b.dataset.country==='all'||D.countries.some(country=>country.id===b.dataset.country))){state.country=b.dataset.country;render();}
@@ -246,6 +330,7 @@
     else if(b.hasAttribute('data-open-action'))openAction();
   });
   main.addEventListener('input',e=>{
+    if(e.target.id==='retention-note'){document.getElementById('retention-note-count').textContent=e.target.value.length;return;}
     if(e.target.id!=='sim-people'&&e.target.id!=='sim-fee')return;
     const people=document.getElementById('sim-people'),fee=document.getElementById('sim-fee');
     if(!fee.validity.valid || fee.value==='') {
@@ -260,8 +345,41 @@
     document.getElementById('sim-formula').textContent=`${result.people}人 × RM ${number(result.fee)} / 月`;
   });
   main.addEventListener('change',e=>{
+    if(e.target.id==='retention-country') {
+      selectRetentionScope(e.target.value);render();document.getElementById('retention-country').focus();return;
+    }
+    if(e.target.id==='retention-store') {
+      selectRetentionScope(e.target.value==='all'?state.retentionCountry:e.target.value);render();document.getElementById('retention-store').focus();return;
+    }
+    if(e.target.id==='retention-status') {
+      const closed=e.target.value==='closed';
+      const outcome=document.getElementById('retention-outcome');
+      outcome.disabled=!closed;outcome.required=closed;
+      if(!closed)outcome.value='unknown';
+      else if(outcome.value==='unknown')outcome.value='';
+      document.getElementById('retention-outcome-help').textContent=closed?'確認できた結果を選んでください。連絡しただけでは、来館再開・継続意向の確認にはなりません。':'「結果記録済み」を選ぶと、確認できた結果の入力が必要になります。対応予定・連絡済みは「経過確認中」として扱います。';
+      return;
+    }
     if(e.target.id==='task-status'&&state.task&&['未着手','対応中','完了'].includes(e.target.value)){
       state.task.status=e.target.value;notify(`デモ内のタスクを「${state.task.status}」にしました。業績数値は変わりません。`);
+    }
+  });
+  main.addEventListener('submit',e=>{
+    if(e.target.id!=='retention-form')return;
+    e.preventDefault();
+    const form=e.target;
+    if(!form.reportValidity())return;
+    const status=form.elements.status.value;
+    const entry={owner:form.elements.owner.value,due:form.elements.due.value,status,outcome:status==='closed'?form.elements.outcome.value:'unknown',note:form.elements.note.value};
+    try {
+      state.retentionRecords=R.saveRecord(state.retentionRecords,form.dataset.caseId,entry);
+      render();
+      document.getElementById('retention-detail-title')?.focus({preventScroll:true});
+      notify('デモ内に記録し、対応サマリーを更新しました。本人への連絡や外部送信は行っていません。');
+    } catch {
+      const feedback=document.getElementById('retention-error');
+      feedback.textContent='記録できませんでした。担当者、10月14日〜12月31日の実在する期限、進捗、240字以内のメモを確認してください。「結果記録済み」には確認結果の選択が必要です。';
+      feedback.hidden=false;
     }
   });
   document.getElementById('action-form').addEventListener('submit',e=>{
@@ -275,7 +393,7 @@
   });
   document.getElementById('dialog-close').addEventListener('click',()=>dialog.close());
   function startTour() {
-    state.tour=true;state.step=0;state.country='all';state.store='B';navigate(tourSteps[0].view);
+    state.tour=true;state.step=0;state.country='all';state.store='B';selectRetentionScope('all');navigate(tourSteps[0].view);
   }
   document.getElementById('tour-start').addEventListener('click',startTour);
   function moveTour(delta) {
@@ -284,6 +402,7 @@
     state.step=Math.max(0,Math.min(lastStep,state.step+delta));
     state.country='all';
     if(tourSteps[state.step].view==='stores')state.store='B';
+    if(tourSteps[state.step].view==='retention')selectRetentionScope('all');
     navigate(tourSteps[state.step].view);
   }
   document.getElementById('tour-prev').addEventListener('click',()=>moveTour(-1));
@@ -291,6 +410,7 @@
   document.getElementById('tour-close').addEventListener('click',()=>{state.tour=false;updateTour();});
   document.getElementById('reset-demo').addEventListener('click',()=>{
     state.task=null;state.people=10;state.fee=180;state.metric='revenue';state.country='all';state.store='B';state.tour=false;state.step=0;
+    state.retentionRecords=R.initialRecords();state.retentionCountry='all';state.retentionStore='all';state.retentionId=R.cases[0].id;
     navigate('intro');notify('デモを初期状態に戻しました。');
   });
   window.addEventListener('keydown',e=>{

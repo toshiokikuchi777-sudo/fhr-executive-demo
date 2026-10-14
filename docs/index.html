@@ -4,10 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#171815">
-  <meta name="description" content="国内外の店舗をひとつの画面で。全店舗・国別・店舗別に売上、利益、会員の動き、対応状況を確認し、AIによる報告の効率化も紹介するLAVICHE / AMZ GROUP経営コンソールの操作デモ。">
+  <meta name="description" content="国内外の店舗をひとつの画面で。全店舗・国別・店舗別に売上、利益、会員の動き、対応状況を確認。退会兆候の確認・スタッフのフォロー・結果記録を体験し、AIによる報告の効率化も紹介するLAVICHE / AMZ GROUP経営コンソールの操作デモ。">
   <title>LAVICHE / AMZ GROUP | フィットネス経営コンソール</title>
   <link rel="stylesheet" href="styles.css">
   <script defer src="data.js"></script>
+  <script defer src="retention-data.js"></script>
   <script defer src="app.js"></script>
 </head>
 <body>
@@ -21,9 +22,10 @@
         <button type="button" data-view="intro"><span>01</span>この資料について</button>
         <button type="button" data-view="overview"><span>02</span>経営概況</button>
         <button type="button" data-view="stores"><span>03</span>店舗の課題</button>
-        <button type="button" data-view="actions"><span>04</span>改善アクション</button>
-        <button type="button" data-view="impact"><span>05</span>効果を考える</button>
-        <button type="button" data-view="rollout"><span>06</span>導入プラン</button>
+        <button type="button" data-view="retention"><span>04</span>会員の継続支援</button>
+        <button type="button" data-view="actions"><span>05</span>改善アクション</button>
+        <button type="button" data-view="impact"><span>06</span>効果を考える</button>
+        <button type="button" data-view="rollout"><span>07</span>導入プラン</button>
       </nav>
       <div class="sidebar-bottom"><div class="profile-avatar">経</div><div>経営者ビュー<small>国内・海外をまとめて確認</small></div></div>
       <div class="sidebar-note">FITNESS MANAGEMENT DEMO<br>DESIGNED BY MASTAR DESIGN</div>
@@ -31,11 +33,11 @@
     <div class="app-body">
       <header class="topbar"><div class="breadcrumb">LAVICHE <span>/</span> <strong id="breadcrumb-current">この資料について</strong></div><div class="topbar-actions"><span class="demo-pill">架空データ · 未接続</span><button type="button" id="tour-start" class="button primary compact">説明に沿って見る <span aria-hidden="true">↗</span></button></div></header>
       <main id="main"></main>
-      <footer class="app-footer"><span>2026年9月 · 架空のフィットネス3モデル（日本・マレーシア）<br>経営概況は円換算、店舗詳細は現地通貨 · 実データ・AI未接続</span><button type="button" id="reset-demo" class="text-button">デモをリセット</button></footer>
+      <footer class="app-footer"><span>架空のフィットネス3モデル（日本・マレーシア）<br>経営実績：2026年9月 ／ 継続支援：10月14日時点の別サンプル6件<br>実データ・AI未接続 · 入力内容は再読み込みで消えます</span><button type="button" id="reset-demo" class="text-button">デモをリセット</button></footer>
     </div>
   </div>
   <div id="tour" class="tour-bar" hidden aria-label="説明の操作">
-    <div class="tour-copy"><span id="tour-count">01 / 06</span><div><strong id="tour-title"></strong><p id="tour-note"></p></div></div>
+    <div class="tour-copy"><span id="tour-count">01 / 07</span><div><strong id="tour-title"></strong><p id="tour-note"></p></div></div>
     <div class="tour-controls"><button type="button" id="tour-prev" class="button">前へ</button><button type="button" id="tour-next" class="button primary">次へ →</button><button type="button" id="tour-close" class="text-button">終了</button></div>
   </div>
   <dialog id="action-dialog" aria-labelledby="action-dialog-title">
