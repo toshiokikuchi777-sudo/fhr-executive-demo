@@ -178,3 +178,9 @@
 @media(max-height:800px) and (min-width:761px){.sidebar{overflow-y:auto}.sidebar-bottom{padding-top:18px}.brand{margin-bottom:18px}.nav-label{padding-top:18px}nav{gap:3px}nav button{padding-block:11px}}
 @media print{.retention-layout{grid-template-columns:1fr}.retention-form,.retention-toolbar{display:none}.retention-case-list{display:none}.retention-summary>div,.retention-store-grid>button,.retention-history li{break-inside:avoid}}
 .retention-case-list>.panel-head{grid-column:1/-1}.retention-case-list h2{font-size:17px}.retention-summary+.sim-note{margin-bottom:24px}.retention-form #retention-outcome-help{margin:0 0 18px}.retention-detail .panel-head h2:focus{outline:0}
+
+/* Two-store AF scope and readable member identities. */
+@media(min-width:1101px){.store-grid,.retention-store-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:761px){section[aria-labelledby="business-scope-title"] .results-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.retention-case-head strong{font-size:15px;letter-spacing:0}.retention-case-head small{font-size:10px;font-variant-numeric:tabular-nums;letter-spacing:.04em}.retention-detail .panel-head .intro-note{margin-top:5px}
+@media print{.store-grid,.retention-store-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

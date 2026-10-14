@@ -22,7 +22,7 @@
         <button type="button" data-view="intro"><span>01</span>この資料について</button>
         <button type="button" data-view="overview"><span>02</span>経営概況</button>
         <button type="button" data-view="stores"><span>03</span>店舗の課題</button>
-        <button type="button" data-view="retention"><span>04</span>会員の継続支援</button>
+        <button type="button" data-view="retention"><span>04</span>会員フォロー</button>
         <button type="button" data-view="actions"><span>05</span>改善アクション</button>
         <button type="button" data-view="impact"><span>06</span>効果を考える</button>
         <button type="button" data-view="rollout"><span>07</span>導入プラン</button>
@@ -31,9 +31,9 @@
       <div class="sidebar-note">FITNESS MANAGEMENT DEMO<br>DESIGNED BY MASTAR DESIGN</div>
     </aside>
     <div class="app-body">
-      <header class="topbar"><div class="breadcrumb">LAVICHE <span>/</span> <strong id="breadcrumb-current">この資料について</strong></div><div class="topbar-actions"><span class="demo-pill">架空データ · 未接続</span><button type="button" id="tour-start" class="button primary compact">説明に沿って見る <span aria-hidden="true">↗</span></button></div></header>
+      <header class="topbar"><div class="breadcrumb">LAVICHE <span>/</span> <strong id="breadcrumb-current">この資料について</strong></div><div class="topbar-actions"><span class="demo-pill">デモ版</span><button type="button" id="tour-start" class="button primary compact">説明に沿って見る <span aria-hidden="true">↗</span></button></div></header>
       <main id="main"></main>
-      <footer class="app-footer"><span>架空のフィットネス3モデル（日本・マレーシア）<br>経営実績：2026年9月 ／ 継続支援：10月14日時点の別サンプル6件<br>実データ・AI未接続 · 入力内容は再読み込みで消えます</span><button type="button" id="reset-demo" class="text-button">デモをリセット</button></footer>
+      <footer class="app-footer"><span>ANYTIME FITNESS · 日本・マレーシアの2店舗を想定<br>氏名・会員番号・数値はすべてデモ用です。入力は再読み込みで消えます。</span><button type="button" id="reset-demo" class="text-button">デモをリセット</button></footer>
     </div>
   </div>
   <div id="tour" class="tour-bar" hidden aria-label="説明の操作">
@@ -43,12 +43,12 @@
   <dialog id="action-dialog" aria-labelledby="action-dialog-title">
     <form id="action-form">
       <div class="dialog-top"><span class="eyebrow">ACTION PLAN</span><button type="button" id="dialog-close" class="icon-button" aria-label="閉じる">×</button></div>
-      <h2 id="action-dialog-title">マレーシアAFモデルのフォローを、実行へ。</h2>
+      <h2 id="action-dialog-title">マレーシアAF店舗のフォロー担当を設定</h2>
       <p class="muted">未対応12件の状況を確認し、必要なフォローを店舗で判断します。</p>
       <label class="field">担当責任者<select name="owner"><option>マレーシア店舗 責任者</option><option>本部 運営担当</option></select></label>
       <label class="field">確認期限<input type="date" name="due" value="2026-10-21" min="2026-10-14" max="2026-12-31" required></label>
       <div class="form-note">登録はこのデモ内のみ。スタッフへの通知や外部への送信は行いません。</div>
-      <button type="submit" class="button primary full-width">デモ内のアクションに追加</button>
+      <button type="submit" class="button primary full-width">アクションに追加</button>
     </form>
   </dialog>
   <div id="toast" role="status" aria-live="polite" hidden></div>
