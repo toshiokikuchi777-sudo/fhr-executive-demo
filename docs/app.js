@@ -6,7 +6,7 @@
   const labels = {intro:'この資料について',overview:'経営概況',stores:'店舗の課題',actions:'改善アクション',impact:'効果を考える',rollout:'導入プラン'};
   const state = {view:'intro',store:'B',metric:'revenue',task:null,people:10,fee:180,tour:false,step:0};
   const tourSteps = [
-    {view:'intro',title:'この仕組みが、自社の経営に役立ちそうか',note:'店舗の状況確認から担当・期限の設定まで、実際の画面で確かめます。まず1〜2店舗で試すなら、どの業務から始めるかをご検討ください。'},
+    {view:'intro',title:'何を管理し、AIでどんな手間を減らすか',note:'売上・会員・スタッフ対応の管理と、AIによる情報整理・報告づくりの活用案をご紹介します。実際の画面で、役立つ業務を確かめてください。'},
     {view:'overview',title:'全店舗の状況を、ひと目でつかむ',note:'売上は伸びています。では、全店舗が同じように順調なのでしょうか。'},
     {view:'stores',title:'店舗Bの課題を、数字で確かめる',note:'退会率は2.0%から3.0%へ。未対応12件との関連は、店舗に確認します。'},
     {view:'actions',title:'提案を、担当と期限のある行動にする',note:'「担当・期限を決める」を押して、デモ内のアクションに追加してください。'},
@@ -27,10 +27,10 @@
       <div class="welcome-hero">
         <div class="welcome-copy">
           <span class="eyebrow">この資料について</span>
-          <h1>店舗の状況をまとめて見て、<br>次に何をするかを決める。</h1>
-          <p class="welcome-lead">複数の店舗を管理する仕組みのご提案です。<br>実際の画面を操作しながら、日々の経営に役立つかを確認できます。</p>
+          <h1>数字を集める時間を減らし、<br>店舗の改善に時間を使う。</h1>
+          <p class="welcome-lead">売上・会員の動き・スタッフの対応を、ひとつの画面に。<br>AIが情報整理や報告づくりを手伝い、経営者と店舗スタッフが判断とお客様対応に時間を使える仕組みをご提案します。</p>
           <div class="welcome-buttons"><button class="button primary" type="button" data-go="overview">デモを見る →</button><button class="button" type="button" data-start-tour>説明に沿って見る</button></div>
-          <p class="welcome-sample">店舗名・数字・AIのコメントは説明用の例です。<br>実際の顧客情報や外部サービスには接続していません。</p>
+          <p class="welcome-sample">このデモの店舗名・数字・AIコメントは説明用の例です。<br>実際の顧客情報やAIサービスには接続していません。</p>
         </div>
         <aside class="welcome-decision">
           <span class="eyebrow">今回、ご検討いただきたいこと</span>
@@ -39,15 +39,40 @@
           <div class="welcome-decision-note">いま使っている会員管理・決済・入退館の仕組みを活かす案です。連携できる情報は、導入前に確認します。</div>
         </aside>
       </div>
-      <section class="welcome-purpose" aria-labelledby="welcome-purpose-title">
-        <div class="section-heading"><h2 id="welcome-purpose-title">日々の「知りたい」を、一つの画面に。</h2><span>このデモで体験する3つのこと</span></div>
-        <ol class="welcome-flow">
-          <li><span class="welcome-step">01</span><p class="welcome-question">どの店舗が順調？</p><h3>全店舗の状況を見る</h3><p>売上・利益・会員数をまとめて、店舗ごとに比較できます。</p></li>
-          <li><span class="welcome-step">02</span><p class="welcome-question">どこを確認すればいい？</p><h3>気になる店舗を確認する</h3><p>退会の増加や、まだ対応できていない件数を詳しく見られます。</p></li>
-          <li><span class="welcome-step">03</span><p class="welcome-question">次に、誰が動く？</p><h3>担当と期限を決める</h3><p>誰が、いつまでに対応するかを決め、その後の進み具合を確認できます。</p></li>
-        </ol>
+      <section class="welcome-section" aria-labelledby="managed-title">
+        <div class="welcome-section-heading"><span class="eyebrow">何を管理する？</span><h2 id="managed-title">店舗の数字と、日々の対応をまとめます。</h2><p>数字を見るだけでなく、確認が必要な店舗と次の対応がわかるようにします。</p></div>
+        <div class="management-list">
+          <article class="management-row"><div class="management-topic"><h3>売上・利益・経費</h3><small>売上、費用、店舗ごとの利益</small></div><p class="management-benefit">店舗ごとの差を比べ、売上や経費を見直すきっかけに。</p><span class="badge">デモで確認</span></article>
+          <article class="management-row"><div class="management-topic"><h3>会員の増減</h3><small>会員数、入会数、退会数</small></div><p class="management-benefit">退会が増えている店舗に気づき、必要なフォローを検討。</p><span class="badge">デモで確認</span></article>
+          <article class="management-row"><div class="management-topic"><h3>スタッフの対応</h3><small>未対応の件数、担当者、期限、進み具合</small></div><p class="management-benefit">誰が、いつまでに動くかを共有し、対応漏れを防ぐ。</p><span class="badge">デモで確認</span></article>
+          <article class="management-row"><div class="management-topic"><h3>集客・個別トレーニング</h3><small>見学予約、契約数、広告費など</small></div><p class="management-benefit">問い合わせから契約までを振り返り、集客や提案を改善。</p><span class="badge warning">導入時の追加案</span></article>
+        </div>
+        <p class="welcome-detail-note">現在のデモは店舗ごとの集計と対応管理の画面例です。会員の詳しい情報や、見学・広告などの連携範囲は導入前に確認します。</p>
       </section>
-      <div class="welcome-bottom"><p>続く画面では、条件を変えた売上の計算と、少数の店舗から試す進め方もご覧いただけます。</p><button class="text-button" type="button" data-go="overview">経営の画面へ進む →</button></div>
+      <section class="welcome-ai" aria-labelledby="ai-value-title">
+        <div class="welcome-section-heading"><span class="badge">本番導入時の活用案</span><span class="eyebrow">AIは何を手伝う？</span><h2 id="ai-value-title">AIで、確認と報告の手間を減らす。</h2><p>AIが確認の準備を手伝い、経営者や店舗責任者が内容を確かめて判断します。</p></div>
+        <div class="ai-value-grid">
+          <article class="ai-value-card"><span class="ai-value-number">01</span><h3>報告を短くまとめる</h3><p>店舗ごとの実績から、要点をまとめた週次報告の下書きを用意します。</p><strong class="ai-value-benefit">報告を書く手間を減らす</strong></article>
+          <article class="ai-value-card"><span class="ai-value-number">02</span><h3>気になる変化を整理する</h3><p>集計結果をもとに、売上の低下や退会の増加など、確認する点と根拠の数字を整理します。</p><strong class="ai-value-benefit">確認する順番を決めやすくする</strong></article>
+          <article class="ai-value-card"><span class="ai-value-number">03</span><h3>次の対応案をつくる</h3><p>店舗に確認する内容や改善案、スタッフへ共有する文章の下書きを用意します。</p><strong class="ai-value-benefit">ゼロから考える負担を減らす</strong></article>
+        </div>
+        <div class="ai-report-example"><div class="ai-report-label">たとえば、数字をこんな報告に<span class="badge">事前に用意した表示例</span></div><blockquote>店舗Bは、退会率が前月の2.0%から3.0%に上昇しています。未対応フォロー12件の状況を、店舗責任者に確認しましょう。</blockquote><button class="text-button" type="button" data-store="B">根拠の数字をデモで見る →</button></div>
+        <p class="welcome-detail-note">数字の集計・計算はシステムで行い、AIは結果の説明や下書きを支援する想定です。提案の採用や会員への連絡は、人が確認して決めます。</p>
+      </section>
+      <section class="welcome-section" aria-labelledby="workflow-title">
+        <div class="welcome-section-heading"><h2 id="workflow-title">情報を集める時間から、判断する時間へ。</h2></div>
+        <div class="work-comparison">
+          <div class="work-before"><span class="work-label">導入前によくある作業</span><ol class="work-steps"><li>資料を各店舗から集める</li><li>数字を読み比べる</li><li>報告を書く</li><li>対応を決める</li></ol></div>
+          <div class="work-after"><span class="work-label">導入後に目指す流れ</span><ol class="work-steps"><li>許可された情報をまとめる</li><li>システムが集計し、AIが要約</li><li>人が確認して対応を決める</li></ol></div>
+        </div>
+      </section>
+      <section class="welcome-results" aria-labelledby="results-title">
+        <div class="welcome-section-heading"><h2 id="results-title">効果は、実際の仕事で確かめます。</h2><p>まず1〜2店舗で試し、導入前後の変化を比べます。</p></div>
+        <div class="results-grid"><div><h3>作業時間</h3><p>報告の作成や数字の確認にかかる時間</p></div><div><h3>対応の進み具合</h3><p>未対応の件数や、期限内に対応できた割合</p></div><div><h3>会員の継続</h3><p>退会率や会員数の変化</p></div></div>
+        <p class="welcome-detail-note">減らせた作業時間と導入・運用費用を比べ、続ける価値を判断します。業績の変化は季節やキャンペーンの影響も確認します。</p>
+        <button class="button" type="button" data-go="impact">効果の見方をデモで確認 →</button>
+      </section>
+      <div class="welcome-bottom"><p>まずは、全店舗の状況を見るところから体験してください。</p><button class="button primary" type="button" data-go="overview">デモを見る →</button></div>
     </section>`;
   }
   function metrics(id='all') {
