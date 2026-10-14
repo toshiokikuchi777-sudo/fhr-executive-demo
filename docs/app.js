@@ -37,16 +37,15 @@
         <div class="welcome-copy">
           <span class="eyebrow">LAVICHE / AMZ GROUP · この資料について</span>
           <h1>国内外の店舗を、<br>ひとつの画面で。</h1>
-          <p class="welcome-lead">国内とマレーシアのANYTIME FITNESSの情報を、まとめて把握する構想です。<br>AIによる情報整理や報告づくりで、経営者と店舗スタッフが判断とお客様対応に時間を使える仕組みをご提案します。</p>
-          <p class="welcome-detail-note">株式会社ラ・ヴィーチェの理念「人生100年時代をより豊かに。」に沿って、店舗を支える日々の管理業務から改善を考えます。</p>
+          <p class="welcome-lead">売上・利益・会員数・対応状況を一元表示。<br>日本とマレーシアの店舗をまとめて確認。</p>
           <div class="welcome-buttons"><button class="button primary" type="button" data-gooverview>デモを見る →</button><button class="button" type="button" data-start-tour>説明に沿って見る</button></div>
-          <p class="welcome-sample">氏名・会員番号・数値はすべてデモ用です。<br>掲載会社の実績や実際の会員情報ではありません。</p>
+          <p class="welcome-sample">氏名・会員番号・数値は架空です。実データ・AIは未接続。</p>
         </div>
         <aside class="welcome-decision">
-          <span class="eyebrow">今回、ご検討いただきたいこと</span>
-          <h2>この仕組みが、<br>自社の経営に役立ちそうか。</h2>
-          <p>まず1〜2店舗で試すなら、どの業務から始めるか。デモを見ながら一緒に考えるための資料です。</p>
-          <div class="welcome-decision-note">いま使っている会員管理・決済・入退館の仕組みを活かす案です。連携できる情報は、導入前に確認します。</div>
+          <span class="eyebrow">このデモでできること</span>
+          <h2>店舗を比較。<br>課題を確認。<br>対応を管理。</h2>
+          <p>会員フォローの記録と、AIレポートの表示例を体験。</p>
+          <div class="welcome-decision-note">既存システムを活用。連携条件は導入前に確認。</div>
         </aside>
       </div>
       <section class="unified-brief" aria-labelledby="unified-title">
